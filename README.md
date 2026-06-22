@@ -1,68 +1,68 @@
-# CS2031 Week 07 – Flight Booking System API
+# CS2031 Semana 07 – API del Sistema de Reserva de Vuelos
 
-REST API for a flight booking system built with Spring Boot, JWT authentication, and an event-driven notification layer. Developed as part of the CS2031 course at UTEC.
+API REST para un sistema de reserva de vuelos construido con Spring Boot, autenticación JWT y una capa de notificaciones basada en eventos. Desarrollado como parte del curso CS2031 en UTEC.
 
-## Technologies
+## Tecnologías
 
 - Java 21 / Spring Boot 3.5
 - Spring Security 6 + JWT (Auth0 java-jwt)
-- Spring Data JPA / H2 in-memory database
+- Spring Data JPA / Base de datos H2 en memoria
 - Lombok, ModelMapper, Jakarta Validation
 - Maven
 
-## Requirements
+## Requisitos
 
-- **Java 21** — verify with `java -version`
-- **No external database needed** — the project uses H2, an in-memory database that runs inside the app
+- **Java 21** — verificar con `java -version`
+- **No se necesita base de datos externa** — el proyecto usa H2, una base de datos en memoria que corre dentro de la aplicación
 
-## Running the Server
+## Iniciar el servidor
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
-The server starts on `http://localhost:8080`. You should see a line like:
+El servidor inicia en `http://localhost:8080`. Deberías ver una línea como:
 
 ```
 Started Week07SolutionApplication in 3.2 seconds
 ```
 
-> **Note:** The H2 database lives entirely in memory. Every time you stop and restart the server, all data (users, flights, bookings) is wiped. This is expected — use `POST /users/register` and `POST /flights/create` again after each restart.
+> **Nota:** La base de datos H2 vive completamente en memoria. Cada vez que detengas y reinicies el servidor, todos los datos (usuarios, vuelos, reservas) se borran. Esto es esperado — usa `POST /users/register` y `POST /flights/create` nuevamente después de cada reinicio.
 
-## Inspecting the Database (H2 Console)
+## Inspeccionar la base de datos (Consola H2)
 
-While the server is running, you can browse the database at:
+Mientras el servidor esté corriendo, puedes explorar la base de datos en:
 
 ```
 http://localhost:8080/h2-console
 ```
 
-Use these connection settings:
+Usa estos datos de conexión:
 
-| Field | Value |
+| Campo | Valor |
 |-------|-------|
 | JDBC URL | `jdbc:h2:mem:testdb` |
 | User Name | `sa` |
-| Password | *(leave blank)* |
+| Password | *(dejar en blanco)* |
 
-Click **Connect** — you can then run SQL queries directly against the live data.
+Haz clic en **Connect** — podrás ejecutar consultas SQL directamente sobre los datos en vivo.
 
 ---
 
-## Authentication
+## Autenticación
 
-Protected endpoints require a JWT token in the `Authorization` header:
+Los endpoints protegidos requieren un token JWT en el encabezado `Authorization`:
 
 ```
 Authorization: Bearer <token>
 ```
 
-Get a token by registering a user and then logging in (see below). There are two roles:
+Obtén un token registrando un usuario y luego iniciando sesión (ver abajo). Existen dos roles:
 
-| Role | Who has it |
-|------|-----------|
-| `USER` | Every registered user |
-| `ADMIN` | Must be set manually in the database (no register endpoint for admins) |
+| Rol | Quién lo tiene |
+|-----|---------------|
+| `USER` | Todo usuario registrado |
+| `ADMIN` | Debe asignarse manualmente en la base de datos (no hay endpoint de registro para admins) |
 
 ---
 
@@ -72,9 +72,9 @@ Get a token by registering a user and then logging in (see below). There are two
 
 #### `POST /auth/login`
 
-No authentication required.
+No requiere autenticación.
 
-**Request body:**
+**Cuerpo de la solicitud:**
 ```json
 {
   "email": "alice@example.com",
@@ -82,25 +82,25 @@ No authentication required.
 }
 ```
 
-**Response `200 OK`:**
+**Respuesta `200 OK`:**
 ```json
 {
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
 
-**Errors:**
-- `400` — missing fields or user not found
+**Errores:**
+- `400` — campos faltantes o usuario no encontrado
 
 ---
 
-### Users
+### Usuarios
 
 #### `POST /users/register`
 
-No authentication required. Creates a new user with role `USER`.
+No requiere autenticación. Crea un nuevo usuario con rol `USER`.
 
-**Request body:**
+**Cuerpo de la solicitud:**
 ```json
 {
   "email": "alice@example.com",
@@ -110,26 +110,26 @@ No authentication required. Creates a new user with role `USER`.
 }
 ```
 
-> **Password rules:** minimum 8 characters, at least one uppercase letter, at least one digit.
-> **Name rules:** `firstName` and `lastName` must start with an uppercase letter.
+> **Reglas de contraseña:** mínimo 8 caracteres, al menos una letra mayúscula y un dígito.
+> **Reglas de nombre:** `firstName` y `lastName` deben comenzar con mayúscula.
 
-**Response `201 Created`:**
+**Respuesta `201 Created`:**
 ```json
 { "id": 1 }
 ```
 
-**Errors:**
-- `400` — validation failure (password too weak, name format wrong, email already registered)
+**Errores:**
+- `400` — fallo de validación (contraseña débil, formato de nombre incorrecto, email ya registrado)
 
 ---
 
 #### `GET /users/current`
 
-Requires: any authenticated user (`USER` or `ADMIN`).
+Requiere: cualquier usuario autenticado (`USER` o `ADMIN`).
 
-Returns the profile of the currently logged-in user.
+Retorna el perfil del usuario actualmente autenticado.
 
-**Response `200 OK`:**
+**Respuesta `200 OK`:**
 ```json
 {
   "id": 1,
@@ -145,25 +145,25 @@ Returns the profile of the currently logged-in user.
 
 #### `GET /users/{id}`
 
-Requires: `ADMIN`.
+Requiere: `ADMIN`.
 
-Returns the profile of any user by their ID.
+Retorna el perfil de cualquier usuario por su ID.
 
-**Response `200 OK`:** same shape as `/users/current`.
+**Respuesta `200 OK`:** misma estructura que `/users/current`.
 
-**Errors:**
-- `403` — caller is not an admin
-- `500` — user ID not found
+**Errores:**
+- `403` — el usuario no es admin
+- `500` — ID de usuario no encontrado
 
 ---
 
 #### `GET /users`
 
-Requires: `ADMIN`.
+Requiere: `ADMIN`.
 
-Returns a list of all registered users.
+Retorna la lista de todos los usuarios registrados.
 
-**Response `200 OK`:**
+**Respuesta `200 OK`:**
 ```json
 [
   {
@@ -179,13 +179,13 @@ Returns a list of all registered users.
 
 ---
 
-### Flights
+### Vuelos
 
 #### `POST /flights/create`
 
-No authentication required.
+No requiere autenticación.
 
-**Request body:**
+**Cuerpo de la solicitud:**
 ```json
 {
   "airlineName": "LATAM",
@@ -196,23 +196,23 @@ No authentication required.
 }
 ```
 
-> **Flight number format:** 2–3 uppercase letters followed by exactly 3 digits (e.g. `LA123`, `AMX456`).
+> **Formato del número de vuelo:** 2–3 letras mayúsculas seguidas de exactamente 3 dígitos (ej. `LA123`, `AMX456`).
 
-**Response `201 Created`:**
+**Respuesta `201 Created`:**
 ```json
 { "id": 1 }
 ```
 
-**Errors:**
-- `400` — flight number already exists or validation failure
+**Errores:**
+- `400` — el número de vuelo ya existe o fallo de validación
 
 ---
 
 #### `POST /flights/create-many`
 
-No authentication required. Creates multiple flights asynchronously — the server returns immediately while flights are saved in the background.
+No requiere autenticación. Crea múltiples vuelos de forma asíncrona — el servidor responde de inmediato mientras los vuelos se guardan en segundo plano.
 
-**Request body:**
+**Cuerpo de la solicitud:**
 ```json
 {
   "inputs": [
@@ -234,17 +234,17 @@ No authentication required. Creates multiple flights asynchronously — the serv
 }
 ```
 
-**Response `201 Created`:** empty body — flights are being created in the background.
+**Respuesta `201 Created`:** cuerpo vacío — los vuelos se están creando en segundo plano.
 
 ---
 
 #### `GET /flights`
 
-No authentication required.
+No requiere autenticación.
 
-Returns a list of all flights.
+Retorna la lista de todos los vuelos.
 
-**Response `200 OK`:**
+**Respuesta `200 OK`:**
 ```json
 [
   {
@@ -262,36 +262,36 @@ Returns a list of all flights.
 
 #### `GET /flights/{id}`
 
-No authentication required.
+No requiere autenticación.
 
-Returns a single flight by ID.
+Retorna un vuelo por su ID.
 
-**Response `200 OK`:** same shape as one item from `GET /flights`.
+**Respuesta `200 OK`:** misma estructura que un elemento de `GET /flights`.
 
-**Errors:**
-- `500` — flight ID not found
+**Errores:**
+- `500` — ID de vuelo no encontrado
 
 ---
 
 #### `GET /flights/search`
 
-No authentication required.
+No requiere autenticación.
 
-All query parameters are optional and can be combined.
+Todos los parámetros son opcionales y se pueden combinar.
 
-| Parameter | Type | Description |
+| Parámetro | Tipo | Descripción |
 |-----------|------|-------------|
-| `flightNumber` | string | Substring match on flight number |
-| `airlineName` | string | Substring match on airline name |
-| `estDepartureTimeFrom` | ISO-8601 string | Lower bound on departure time (e.g. `2026-12-01T00:00:00Z`) |
-| `estDepartureTimeTo` | ISO-8601 string | Upper bound on departure time |
+| `flightNumber` | string | Búsqueda parcial en el número de vuelo |
+| `airlineName` | string | Búsqueda parcial en el nombre de la aerolínea |
+| `estDepartureTimeFrom` | ISO-8601 | Límite inferior de la hora de salida (ej. `2026-12-01T00:00:00Z`) |
+| `estDepartureTimeTo` | ISO-8601 | Límite superior de la hora de salida |
 
-**Example:**
+**Ejemplo:**
 ```
 GET /flights/search?airlineName=LATAM&estDepartureTimeFrom=2026-12-01T00:00:00Z
 ```
 
-**Response `200 OK`:**
+**Respuesta `200 OK`:**
 ```json
 {
   "items": [
@@ -311,33 +311,33 @@ GET /flights/search?airlineName=LATAM&estDepartureTimeFrom=2026-12-01T00:00:00Z
 
 #### `POST /flights/book`
 
-Requires: any authenticated user.
+Requiere: cualquier usuario autenticado.
 
-Books a flight for the currently logged-in user.
+Reserva un vuelo para el usuario actualmente autenticado.
 
-**Request body:**
+**Cuerpo de la solicitud:**
 ```json
 { "flightId": 1 }
 ```
 
-**Response `200 OK`:**
+**Respuesta `200 OK`:**
 ```json
 { "id": 1 }
 ```
 
-**Errors:**
-- `400` — flight has already departed, or it overlaps with another booking the user already has, or no available seats
-- `401` — not authenticated
+**Errores:**
+- `400` — el vuelo ya despegó, se superpone con otra reserva del usuario, o no hay asientos disponibles
+- `401` — no autenticado
 
 ---
 
 #### `GET /flights/book/{id}`
 
-Requires: any authenticated user.
+Requiere: cualquier usuario autenticado.
 
-Returns the details of a booking by its ID.
+Retorna los detalles de una reserva por su ID.
 
-**Response `200 OK`:**
+**Respuesta `200 OK`:**
 ```json
 {
   "id": 1,
@@ -354,47 +354,47 @@ Returns the details of a booking by its ID.
 
 ---
 
-### Utilities
+### Utilidades
 
 #### `DELETE /cleanup`
 
-No authentication required. **Deletes all bookings, flights, and users.** For testing only.
+No requiere autenticación. **Elimina todas las reservas, vuelos y usuarios.** Solo para pruebas.
 
-**Response `200 OK`:** empty body.
-
----
-
-## Booking Business Rules
-
-1. **Past flights** — cannot book a flight whose departure or arrival time is already in the past.
-2. **Overlapping flights** — cannot book a flight if you already have a booking whose time window overlaps with it.
-3. **Seat count** — booking atomically reduces `availableSeats` by 1.
-4. **Notifications** — every successful booking writes a `.txt` file to the working directory (simulates an email notification via Spring application events).
+**Respuesta `200 OK`:** cuerpo vacío.
 
 ---
 
-## Quick Start Walkthrough
+## Reglas de negocio para reservas
+
+1. **Vuelos pasados** — no se puede reservar un vuelo cuya hora de salida o llegada ya pasó.
+2. **Vuelos superpuestos** — no se puede reservar un vuelo si ya tienes una reserva cuya ventana de tiempo se superpone con él.
+3. **Asientos disponibles** — la reserva reduce `availableSeats` en 1 de forma atómica.
+4. **Notificaciones** — cada reserva exitosa escribe un archivo `.txt` en el directorio de trabajo (simula una notificación por email mediante eventos de Spring).
+
+---
+
+## Inicio rápido
 
 ```bash
-# 1. Start the server
+# 1. Iniciar el servidor
 ./mvnw spring-boot:run
 
-# 2. Register a user
+# 2. Registrar un usuario
 curl -s -X POST http://localhost:8080/users/register \
   -H "Content-Type: application/json" \
   -d '{"email":"alice@example.com","firstName":"Alice","lastName":"Smith","password":"Password1"}'
 
-# 3. Log in and get a token
+# 3. Iniciar sesión y obtener el token
 TOKEN=$(curl -s -X POST http://localhost:8080/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"alice@example.com","password":"Password1"}' | grep -o '"token":"[^"]*"' | cut -d'"' -f4)
 
-# 4. Create a flight (open — no auth needed)
+# 4. Crear un vuelo (abierto — no requiere auth)
 curl -s -X POST http://localhost:8080/flights/create \
   -H "Content-Type: application/json" \
   -d '{"airlineName":"LATAM","flightNumber":"LA123","estDepartureTime":"2026-12-01T10:00:00Z","estArrivalTime":"2026-12-01T14:00:00Z","availableSeats":100}'
 
-# 5. Book the flight
+# 5. Reservar el vuelo
 curl -s -X POST http://localhost:8080/flights/book \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $TOKEN" \
@@ -403,15 +403,15 @@ curl -s -X POST http://localhost:8080/flights/book \
 
 ---
 
-## Project Structure
+## Estructura del proyecto
 
 ```
 src/main/java/utec/week07/solution/
-├── Configuration.java              # Security, ModelMapper, async executor
-├── RestControllerAdviceHandler.java # Global exception → HTTP mapping
-├── auth/                           # JwtAuthFilter, login controller
-├── users/                          # User entity, registration, role
-├── flights/                        # Flight & Booking logic, events, search
-├── cleanup/                        # DELETE /cleanup test helper
+├── Configuration.java              # Seguridad, ModelMapper, executor async
+├── RestControllerAdviceHandler.java # Excepciones globales → respuestas HTTP
+├── auth/                           # JwtAuthFilter, controlador de login
+├── users/                          # Entidad User, registro, rol
+├── flights/                        # Lógica de vuelos y reservas, eventos, búsqueda
+├── cleanup/                        # Helper DELETE /cleanup para pruebas
 └── common/                         # ValidationException, NewIdDTO
 ```
