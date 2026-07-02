@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Runtime: notificaciones de reserva generadas por el backend ###
+flight_booking_email_*.txt

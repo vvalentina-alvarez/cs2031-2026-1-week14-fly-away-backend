@@ -126,6 +126,13 @@ public class FlightService implements ApplicationEventPublisherAware {
 
         var currentUser = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
+        // No permitir reservar el mismo vuelo dos veces.
+        boolean alreadyBooked = this.bookingRepository.findByCustomer(currentUser).stream()
+                .anyMatch(b -> b.getFlight().getId().equals(flight.getId()));
+        if (alreadyBooked) {
+            throw new ValidationException("You have already booked this flight");
+        }
+
         validateBookingsOverlapping(currentUser, flight);
 
         Booking booking = new Booking();
