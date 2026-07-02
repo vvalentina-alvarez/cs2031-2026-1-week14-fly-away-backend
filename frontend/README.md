@@ -1,4 +1,4 @@
-# Fly Away — Frontend ✈️
+# Fly Away — Frontend
 
 SPA en **React 18 + TypeScript + Vite** que consume la API de reserva de vuelos **Fly Away**.
 Cubre todas las funcionalidades del laboratorio (must have + nice to have).
@@ -44,15 +44,15 @@ Si no se define, cae por defecto a `http://localhost:8080`.
 
 | Funcionalidad | Endpoint | Estado |
 |---------------|----------|--------|
-| Registro con validación y redirección a login | `POST /users/register` | ✅ must have |
-| Login + guardado de JWT en `localStorage` | `POST /auth/login` | ✅ must have |
-| Mostrar usuario autenticado en la barra de navegación | `GET /users/current` | ✅ nice to have |
-| Búsqueda por número de vuelo y aerolínea | `GET /flights/search` | ✅ must have |
-| Filtro por rango de fechas de salida | `GET /flights/search` | ✅ nice to have |
-| Reservar vuelo (solo autenticados) con mensaje de éxito | `POST /flights/book` | ✅ must have |
-| Ver detalle de la reserva creada | `GET /flights/book/{id}` | ✅ nice to have |
-| Mis reservas (IDs guardados en `localStorage`) | `GET /flights/book/{id}` | ✅ nice to have |
-| Logout + rutas protegidas + navegación | — | ✅ must have |
+| Registro con validación y redirección a login | `POST /users/register` | must have |
+| Login + guardado de JWT en `localStorage` | `POST /auth/login` | must have |
+| Mostrar usuario autenticado en la barra de navegación | `GET /users/current` | nice to have |
+| Búsqueda por número de vuelo y aerolínea | `GET /flights/search` | must have |
+| Filtro por rango de fechas de salida | `GET /flights/search` | nice to have |
+| Reservar vuelo (solo autenticados) con mensaje de éxito | `POST /flights/book` | must have |
+| Ver detalle de la reserva creada | `GET /flights/book/{id}` | nice to have |
+| Mis reservas (IDs guardados en `localStorage`) | `GET /flights/book/{id}` | nice to have |
+| Logout + rutas protegidas + navegación | — | must have |
 
 ## Estructura
 

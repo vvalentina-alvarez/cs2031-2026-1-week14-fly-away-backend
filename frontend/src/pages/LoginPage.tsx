@@ -33,7 +33,8 @@ export default function LoginPage() {
     setSubmitting(true);
     try {
       await login(email, password);
-      navigate(state?.from ?? '/search', { replace: true });
+      //redirigir a búsqueda tras login
+      navigate('/search', { replace: true });
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {

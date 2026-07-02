@@ -42,3 +42,9 @@ export function addBookingId(userKey: string, id: number): void {
     localStorage.setItem(bookingKey(userKey), JSON.stringify(ids));
   }
 }
+
+//reemplaza la lista completa (para limpiar ids obsoletos que ya no son del usuario)
+export function setBookingIds(userKey: string, ids: number[]): void {
+  if (!userKey) return;
+  localStorage.setItem(bookingKey(userKey), JSON.stringify(ids));
+}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getBooking } from '../api/flightApi';
 import type { BookingDetail } from '../types/flight';
-import { getBookingIds } from '../utils/storage';
+import { getBookingIds, setBookingIds } from '../utils/storage';
 import { getErrorMessage } from '../utils/errorHandler';
 import { useAuth } from '../hooks/useAuth';
 import BookingCard from '../components/BookingCard';
@@ -14,7 +14,7 @@ export default function MyBookingsPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    //perfil usuario reservas
+    //perfil cargue para saber de qué usuario son las reservas
     if (!user) return;
 
     let active = true;
@@ -26,21 +26,20 @@ export default function MyBookingsPage() {
       return;
     }
 
-    //cada id guardado -> GET /flights/book/{id}
+    //id guardado con GET /flights/book/{id}.
     Promise.allSettled(ids.map((id) => getBooking(id)))
       .then((results) => {
         if (!active) return;
-        const ok = results
+
+        const fulfilled = results
           .filter((r): r is PromiseFulfilledResult<BookingDetail> => r.status === 'fulfilled')
           .map((r) => r.value);
-        setBookings(ok);
 
-        const failed = results.filter((r) => r.status === 'rejected');
-        if (failed.length > 0) {
-          setError(
-            `No se pudieron cargar ${failed.length} reserva(s). Puede que ya no existan en el servidor.`,
-          );
-        }
+        const mine = fulfilled.filter((b) => b.customerId === user.id);
+
+        setBookingIds(user.username, mine.map((b) => b.id));
+
+        setBookings(mine);
       })
       .catch((err) => {
         if (active) setError(getErrorMessage(err));
