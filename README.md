@@ -1,6 +1,6 @@
-# Fly Away ✈️ — Sistema de Reserva de Vuelos
+# Fly Away — Sistema de Reserva de Vuelos
 
-Aplicación full-stack de reserva de vuelos: un **frontend en React + TypeScript** que consume una **API REST en Spring Boot** con autenticación JWT.
+Aplicación de reserva de vuelos: un **frontend en React + TypeScript** que consume una **API REST en Spring Boot** con autenticación JWT.
 
 - **Frontend:** React 18 + TypeScript + Vite + Tailwind CSS → carpeta [`frontend/`](./frontend)
 - **Backend:** Spring Boot 3.5 + Spring Security (JWT) + H2 en memoria → carpeta [`src/`](./src)
