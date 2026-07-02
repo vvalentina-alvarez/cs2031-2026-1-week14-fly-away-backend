@@ -145,7 +145,7 @@ export default api;
 
 ## Referencia de la API del backend
 
-Toda la documentación de endpoints — rutas, cuerpos de solicitud, estructura de respuestas, requisitos de autenticación y reglas de negocio — está en **[README.md](./README.md)**.
+Toda la documentación de endpoints — rutas, cuerpos de solicitud, estructura de respuestas, requisitos de autenticación y reglas de negocio — está en **[BACKEND_API.md](./BACKEND_API.md)**.
 
 ---
 
